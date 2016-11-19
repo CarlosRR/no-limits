@@ -1,0 +1,142 @@
+// CODIGO SERVO (CONTROLADO POR UN POTENCIOMETRO)
+
+#include <Servo.h>
+int pinPot = A1;
+Servo miServo;
+
+void setup() {
+  miServo.attach(10);
+
+}
+
+void loop() {
+  int potRead = analogRead(pinPot);
+  int servoValue = map(potRead, 0, 1023, 0, 180);
+  miServo.write(servoValue);
+  delay(500);
+
+}
+
+//CODIGO LED CONTROLADO VIA BLUETOOTH
+
+int led9=9;
+int estado=0;
+
+void setup()
+{
+  Serial.begin(9600);
+  pinMode(9,OUTPUT);
+}
+
+void loop()
+{
+  if(Serial.available()>0){
+    estado=Serial.read(); //LO QUE ARROJEN LOS VALORES DEL BT SE ALAMACENA (READ) EN LA VARIABLE ESTADO
+  }
+  if (estado=='1'){
+    digitalWrite(9,HIGH);
+  }
+  if (estado=='2'){
+    digitalWrite(9,LOW);
+  }
+}
+
+// CODIGO CONTROL DE MOTOR USANDO PUENTE H Y POTENCIOMETRO
+
+int PinForward = 3;
+int PinReverse = 6;
+int PinPote = A1;
+
+int ValorPote;
+int Pote;
+int PWMf;
+int PWMr;
+void setup() {
+pinMode(PinForward, OUTPUT);
+pinMode(PinReverse, OUTPUT);
+}
+
+void loop()
+{
+  ValorPote = analogRead(PinPote);
+  
+  PWMf = map(ValorPote, 0, 1023, 0, 255);
+  PWMr = map(ValorPote, 0, 1023, 255, 0);
+
+  if (PWMf > 127){
+    digitalWrite(PinForward, HIGH);
+    analogWrite(PinForward, PWMf);
+    analogWrite(PinReverse, LOW);
+  }
+
+  if (PWMr < 127){
+    digitalWrite(PinReverse, HIGH);
+    analogWrite(PinReverse, PWMr);
+    analogWrite(PinForward, LOW);
+  }
+}
+
+//ULTRASONIDO (LEDS QUE PRENDEN CONFORME LA DISTANCIA DISMINUYE)
+
+const int trigPin=2;
+const int echoPin=3;
+const int led1=4;
+const int led2=5;
+const int led3=6;
+const int led4=7;
+long duracion;
+int distancia;
+
+void setup() {
+ pinMode(trigPin, OUTPUT);
+ pinMode(echoPin, INPUT);
+ pinMode (led1,4);
+ pinMode (led2,5);
+ pinMode (led3,6);
+ pinMode (led4,7);
+ Serial.begin(9600);
+}
+
+ 
+void loop() {
+  digitalWrite(trigPin, LOW);
+  delay (2);
+  
+  digitalWrite(trigPin, HIGH);
+  delay(10); 
+  digitalWrite(trigPin, LOW);  
+
+duracion=pulseIn(echoPin,HIGH);
+distancia=duracion*.034/2;
+
+ if (distancia>=0&&distancia<8){
+    digitalWrite(led1,HIGH);
+    digitalWrite(led2,LOW);
+    digitalWrite(led3,LOW);
+    digitalWrite(led4,LOW);
+  }
+ if (distancia>=8&&distancia<=16){
+    digitalWrite(led1,LOW);
+    digitalWrite(led2,HIGH);
+    digitalWrite(led3,HIGH);
+    digitalWrite(led4,LOW);
+  }
+  if (distancia>16&&distancia<=24){
+    digitalWrite(led1,LOW);
+    digitalWrite(led2,HIGH);
+    digitalWrite(led3,HIGH);
+    digitalWrite(led4,LOW);
+  }
+  if (distancia>24&&distancia<=32){
+    digitalWrite(led1,LOW);
+    digitalWrite(led2,LOW);
+    digitalWrite(led3,LOW);
+    digitalWrite(led4,HIGH);
+  }
+  if (distancia>32){
+    digitalWrite(led1,LOW);
+    digitalWrite(led2,LOW);
+    digitalWrite(led3,LOW);
+    digitalWrite(led4,HIGH);
+  }
+}
