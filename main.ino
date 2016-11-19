@@ -7,7 +7,7 @@ void setup() {
 }
 
 void loop() {
-	
+	//aquí va el código principal
 }
 
 void ultrasonic() {
